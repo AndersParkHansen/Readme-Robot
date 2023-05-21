@@ -1,0 +1,5 @@
+name: 'Automated Documentation Test'
+description: 'Automatically scans all changed files in a commit and updates the documentation in README.md'
+runs:
+  using: 'node16'
+  main: 'index.js'
