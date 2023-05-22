@@ -25,14 +25,15 @@ try {
 
   // If README exists, prepare the system and user messages to compare the README and code
   messages = [
-    { role: 'system', content: 'You are a README.md expert. You will assist the user in creating documentation for software being built.' },
-    { role: 'user', content: `Can you compare this README.md ${readmeFile} with this code ${codeFile} and suggest changes?`}
-  ];
+    { role: 'system', content: 'You are a README.md expert. You will assist the user in creating documentation for software being built. You will respond with an JSON object separating your rationale/message from the suggested README.md' },
+    { role: 'user', content: `Can you compare this README.md ${readmeFile} with this code ${codeFile} and suggest changes? Reply with a JSON object separating your message from the suggested README.md like this: \n \`\`\` \n { "message": "your rationale", "readme": "suggested readme file content" } \n \`\`\``}
+];
+
 } catch (error) {
   // If README doesn't exist, prepare the system and user messages to generate a new README
   messages = [
-    { role: 'system', content: 'You are a README.md expert. You will assist the user in creating documentation for software being built.' },
-    { role: 'user', content: `Can you create a README.md documenting this code?\n\n ${codeFile}?`}
+    { role: 'system', content: 'You are a README.md expert. You will assist the user in creating documentation for software being built. You will respond with an JSON object separating your rationale/message from the suggested README.md' },
+    { role: 'user', content: `Can you create a README.md documenting this code?\n\n ${codeFile}? Reply with a JSON object separating your message from the suggested README.md like this: \n \`\`\` \n { "message": "your rationale", "readme": "suggested readme file content" } \n \`\`\``}
   ];
 }
 
