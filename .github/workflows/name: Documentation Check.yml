@@ -1,4 +1,5 @@
 name: Documentation Check
+on:
   push:
     branches:
       - main
