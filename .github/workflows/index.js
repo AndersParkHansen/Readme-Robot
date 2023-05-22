@@ -25,14 +25,15 @@ try {
 
   // If README exists, prepare the system and user messages to compare the README and code
   messages = [
-    { role: 'system', content: 'You are a README.md expert. You will assist the user in creating documentation for software being built.' },
-    { role: 'user', content: `Can you compare this README.md ${readmeFile} with this code ${codeFile} and suggest changes?`}
-  ];
+    { role: 'system', content: 'You are a friendly README.md expert. You may ONLY identify errors and missing features in the users documentation. You will not suggest new features or change existing wording unless it is explicitly wrong. If changes are needed, you will output the suggested README.md as one coherent block of markdown. If no features are missing in the documentation and nothing is explicitly wrong, DO NOT output any markdown.' },
+    { role: 'user', content: 'Can you compare this README.md ${readmeFile} with this code ${codeFile} and check for errors and missing features? If no features are missing and nothing is explicitly wrong, DO NOT output any markdown.' }
+];
+
 } catch (error) {
   // If README doesn't exist, prepare the system and user messages to generate a new README
   messages = [
-    { role: 'system', content: 'You are a README.md expert. You will assist the user in creating documentation for software being built.' },
-    { role: 'user', content: `Can you create a README.md documenting this code?\n\n ${codeFile}?`}
+    { role: 'system', content: 'You are a friendly README.md expert. You will assist the user in creating documentation for software being built. Your may provide a rationale around it, and you will output your suggested README.md as one coherent block of markdown.' },
+    { role: 'user', content: `Can you create a README.md documenting this code?\n\n ${codeFile}? `}
   ];
 }
 
