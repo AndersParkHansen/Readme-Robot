@@ -1,4 +1,3 @@
-```markdown
 # openai-check-the-docs
 
 This GitHub action compares the contents of pushed code with the contents of the README.md and creates a pull request with suggested documentation changes. It uses the OpenAI API to generate suggestions for documentation updates.
@@ -39,4 +38,3 @@ The script will read the contents of `index.js` (change file name in the code to
 - Read changed files in a commit from GitHub instead of reading directly from the local filesystem.
 - Change the script to read the content of files affected by a commit instead of a hardcoded `index.js` file.
 - Structure the API response better so the README.md can be extracted programmatically
-```
