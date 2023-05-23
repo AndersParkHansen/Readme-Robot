@@ -1,5 +1,4 @@
-// Load environment variables with API keys
-require('dotenv').config();
+module.exports = async function createPullRequest(markdown) {
 
 const { Octokit } = require("@octokit/rest");
 const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
@@ -41,16 +40,16 @@ octokit.rest.git.getRef({
 }).then(response => {
     const sha = response.data.sha;
 
-    // 4. Update the README.md on the new branch
-    return octokit.rest.repos.createOrUpdateFileContents({
-        owner: 'AndersParkHansen',
-        repo: 'openai-check-the-docs',
-        path: 'README.md',
-        message: 'Bot updates README.md',
-        content: Buffer.from('Hello, World!').toString('base64'),
-        branch: 'bot-requests',
-        sha: sha,
-    });
+        // Update the README.md on the new branch with the given markdown
+        return octokit.rest.repos.createOrUpdateFileContents({
+            owner: 'AndersParkHansen',
+            repo: 'openai-check-the-docs',
+            path: 'README.md',
+            message: 'Bot updates README.md',
+            content: Buffer.from(markdown).toString('base64'), // Use markdown here
+            branch: 'bot-requests',
+            sha: sha,
+        });
 }).then(response => {
     // 5. Create a new pull request
     return octokit.rest.pulls.create({
@@ -67,3 +66,5 @@ octokit.rest.git.getRef({
 }).catch(error => {
     console.error(error);
 });
+
+}
