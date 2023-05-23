@@ -9,6 +9,8 @@ const { Configuration, OpenAIApi } = require('openai');
 const { Octokit } = require("@octokit/rest");
 const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
+console.log(process.env.GITHUB_TOKEN);
+
 const owner = 'AndersParkHansen'; // Replace with your GitHub username
 const repo = 'openai-check-the-docs'; // Replace with your repository name
 const base = 'main'; // The base branch for the pull request
@@ -49,16 +51,22 @@ try {
 
 function extractMarkdown(apiResponse) {
   const content = apiResponse.data.choices[0].message.content;
-  const markdownStart = content.indexOf("```markdown");
-  const markdownEnd = content.lastIndexOf("```");
+  
+  // Regular expression to match markdown blocks
+  const markdownBlockRegex = /```[\s\S]*?```/;
+  
+  // Match the first markdown block
+  const markdownBlocks = content.match(markdownBlockRegex);
 
-  if (markdownStart === -1 || markdownEnd === -1) {
+  if (markdownBlocks === null) {
     console.log("No markdown found in response.");
     return;
   }
 
-  return content.substring(markdownStart + "```markdown".length, markdownEnd);
+  // Return the first markdown block
+  return markdownBlocks[0];
 }
+
 
 async function createChatCompletion() {
   // Call the OpenAI API with the prepared messages

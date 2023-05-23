@@ -20,7 +20,8 @@ const path = 'README.md'; // The file to update
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
-const openai = new OpenAIApi(configuration);
+const openai = new OpenAIApi(configuGH Actions
+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 ration);
 
 // Read the local test file
 //TODO: change to reading the content of files affected by a commit 
