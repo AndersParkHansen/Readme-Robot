@@ -7,7 +7,7 @@ This GitHub action compares the contents of pushed code with the contents of the
 1. Install the required dependencies:
 
 ```bash
-npm install
+pnm install
 ```
 
 2. Create a `.env` file in the root directory and add your OpenAI API key:
