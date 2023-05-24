@@ -6,8 +6,7 @@ require('dotenv').config();
 const fs = require('fs');
 const { Configuration, OpenAIApi } = require('openai');
 
-const { Octokit } = require("@octokit/rest");
-const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+const createPullRequest = require('./createPullRequest');
 
 const owner = 'AndersParkHansen'; // Replace with your GitHub username
 const repo = 'openai-check-the-docs'; // Replace with your repository name
@@ -35,7 +34,7 @@ try {
 
   // If README exists, prepare the system and user messages to compare the README and code
   messages = [
-    { role: 'system', content: 'You are a friendly README.md expert. You may only identify ERRORS and DISCREPANCIES in the users documentation. You will NOT suggest new features or code. You will not change existing wording unless it has errors. If changes are needed, you will output the suggested README.md as one coherent block of markdown. If no features are missing in the documentation and nothing is wrong, DO NOT output any markdown.' },
+    { role: 'system', content: 'You are a friendly README.md expert. Your purpose is to identify ERRORS and DISCREPANCIES in the users documentation. You will NOT suggest new features or code in the software refered in the documentation. If changes or additions are needed in the README.md, you will output the entire suggested README.md as one coherent block of markdown. If no features are missing in the documentation and nothing is wrong, DO NOT output any markdown.' },
     { role: 'user', content: `Can you compare this README.md ${readmeFile} with this code ${codeFile} and check for errors and discrepancies? If no features are missing and nothing is explicitly wrong, DO NOT reply with any markdown.` }
 ];
 
@@ -49,16 +48,30 @@ try {
 
 function extractMarkdown(apiResponse) {
   const content = apiResponse.data.choices[0].message.content;
-  const markdownStart = content.indexOf("```markdown");
-  const markdownEnd = content.lastIndexOf("```");
 
-  if (markdownStart === -1 || markdownEnd === -1) {
+  // Regular expression to match markdown blocks
+  const markdownBlockRegex = /```markdown\n([\s\S]*?)\n```/s;
+
+  // Match all markdown blocks
+  const markdownBlocks = content.match(markdownBlockRegex);
+
+  if (markdownBlocks === null) {
     console.log("No markdown found in response.");
     return;
   }
 
-  return content.substring(markdownStart + "```markdown".length, markdownEnd);
+  // If markdownBlocks is not null, it's an array and we can map over it
+  if (markdownBlocks) {
+    // Return all markdown blocks, excluding the leading "```markdown" and trailing ```
+    // The group in parentheses in the regex captures the part we want
+    const markdowns = markdownBlocks.map(block => block.slice(12, -3)); // slice to remove leading and trailing markdown syntax
+    
+    // Join all the markdown blocks into a single string before returning
+    return markdowns.join('\n');
+  }
 }
+
+
 
 async function createChatCompletion() {
   // Call the OpenAI API with the prepared messages
@@ -70,36 +83,21 @@ async function createChatCompletion() {
   });
   
   // Extract markdown from API response
-  const markdown = extractMarkdown(response);
+  // const markdown = extractMarkdown(response);
+  const markdown = response.data.choices[0].message.content;
   
-  // If markdown is returned, create pull request
-  if (markdown) {
-    await createPullRequest(markdown);
-  }
+// If markdown is returned, create pull request
+if (markdown) {
+  //console.log("Before replacement:", markdown);
+  //const formattedMarkdown = markdown.replace(/```/g, '~~~');
+  //console.log("After replacement:", formattedMarkdown);
+  await createPullRequest(markdown);
+}
 
   // Log the suggested changes or new README content
   console.log(`Suggested changes or generated README content: ${response.data.choices[0].message.content}`);
 }
 
-async function createPullRequest(markdown) {
-  // Step 1: Get the SHA of the latest commit on the base branch
-  const { data: { object: { sha: baseSha }}} = await octokit.git.getRef({ owner, repo, ref: `heads/${base}` });
-
-  // Step 2: Create a new branch
-  await octokit.git.createRef({ owner, repo, ref: `refs/heads/${head}`, sha: baseSha });
-
-  // Step 3: Get the content of the existing README.md file
-  const { data: { content: oldContent, sha: oldSha }} = await octokit.repos.getContent({ owner, repo, path });
-
-  // Prepare the new content. You should replace this with your new README content.
-  const newContent = Buffer.from(oldContent + '\n' + markdown).toString('base64');
-
-  // Step 4: Update the README.md file on the new branch
-  await octokit.repos.createOrUpdateFileContents({ owner, repo, path, message: 'Update README.md', content: newContent, sha: oldSha, branch: head });
-
-  // Step 5: Create a pull request
-  await octokit.pulls.create({ owner, repo, title: 'Update README.md', head, base });
-}
 
 // Call the function to start the process
 createChatCompletion();
