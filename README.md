@@ -1,13 +1,13 @@
 # openai-check-the-docs
 
-This GitHub action compares the contents of pushed code with the contents of the README.md and creates a pull request with suggested documentation changes. It uses the OpenAI API to generate suggestions for documentation updates.
+This Github action compares the contents of pushed code with the contents of the README.md and creates a pull request with suggested documentation changes. It uses the OpenAI API to generate suggestions for documentation updates.
 
-## Setup (locally for testing)
+## Local Setup 
 0. Create an OpenAI API key at https://platform.openai.com/ if you do not already have one
 1. Install the required dependencies:
 
 ```bash
-pnm install
+npm install
 ```
 
 2. Create a `.env` file in the root directory and add your OpenAI API key:
@@ -16,7 +16,7 @@ pnm install
 OPENAI_API_KEY=your_api_key_here
 ```
 
-## Usage
+## Local Usage
 
 Run the script with the following command:
 
@@ -24,9 +24,10 @@ Run the script with the following command:
 node index.js
 ```
 
-The script will read the contents of `index.js` (change file name in the code to read another file) and compare it with the existing `README.md` file. If the README file doesn't exist, it will generate a new one based on the code.
+## Github Setup
+I have no idea whatsoever
 
-## How it works
+## Github Usage
 
 0. The Documentation Check.yml Github Action in the .github/workflows runs on remote pushes to Github (yes, in this repo it checks the index.js script in the root, so it kind of scans a version of itself)
 1. The script in .github/workflows loads the required modules and configures the OpenAI API client with the provided API key.
