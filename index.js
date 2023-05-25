@@ -50,14 +50,14 @@ function extractMarkdown(apiResponse) {
   const content = apiResponse.data.choices[0].message.content;
 
   // Regular expression to match markdown blocks
-  const markdownBlockRegex = /```markdown\n([\s\S]*?)\n```/s;
+  const markdownBlockRegex = /```markdown\n([\s\S]*?)\n```(?![\s\S]*```)/s;
 
   // Match all markdown blocks
   const markdownBlocks = content.match(markdownBlockRegex);
 
   if (markdownBlocks === null) {
-    console.log("No markdown found in response.");
-    return;
+    console.log("No specific markdown block found in response. Returning the full content.");
+    return content;
   }
 
   // If markdownBlocks is not null, it's an array and we can map over it
@@ -73,25 +73,26 @@ function extractMarkdown(apiResponse) {
 
 
 
+
 async function createChatCompletion() {
   // Call the OpenAI API with the prepared messages
   const response = await openai.createChatCompletion({
-    model: 'gpt-4',
+    model: 'gpt-3.5-turbo',
     messages: messages,
     max_tokens: 2048,
     temperature: 0.0,
   });
   
   // Extract markdown from API response
-  // const markdown = extractMarkdown(response);
-  const markdown = response.data.choices[0].message.content;
+   const markdown = extractMarkdown(response);
+  //const markdown = response.data.choices[0].message.content;
   
 // If markdown is returned, create pull request
 if (markdown) {
-  //console.log("Before replacement:", markdown);
+  console.log("Before replacement:", markdown);
   //const formattedMarkdown = markdown.replace(/```/g, '~~~');
   //console.log("After replacement:", formattedMarkdown);
-  await createPullRequest(markdown);
+  // await createPullRequest(markdown);
 }
 
   // Log the suggested changes or new README content
