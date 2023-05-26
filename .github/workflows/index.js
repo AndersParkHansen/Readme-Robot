@@ -123,7 +123,7 @@ async function createChatCompletion() {
   // If markdown is returned, create pull request
   if (markdown) {
     console.log(markdown);
-    // await createPullRequest(markdown);
+    await createPullRequest(markdown);
   }
 }
 
