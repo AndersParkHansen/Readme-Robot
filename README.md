@@ -34,7 +34,7 @@ To set up the Github action, follow these steps:
 
 ## Github Usage
 
-1. The `Documentation Check.yml` Github Action in the `.github/workflows` runs on remote pushes to Github (yes, in this repo it checks the `index.js` script in the root, so it kind of scans a version of itself).
+1. The `Documentation Check.yml` Github Action in the `.github/workflows` runs on remote pushes to Github (in this repo it checks the `index.js` script in the root, so it does scan a version of itself).
 2. The script in `.github/workflows` loads the required modules and configures the OpenAI API client with the provided API key.
 3. It reads the contents of the `index.js` file in the repo root.
 4. If a `README.md` file exists, it compares the contents of the README and the code, and suggests changes. If the README file doesn't exist, it generates a new one based on the code.
@@ -43,3 +43,4 @@ To set up the Github action, follow these steps:
 ## TODO
 
 - Change the script to read the content of files affected by a commit instead of a hardcoded `index.js` file.
+- Understand the inner workings of Github pull requests, merge requests and branches better.
