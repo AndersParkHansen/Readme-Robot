@@ -42,5 +42,4 @@ To set up the Github action, follow these steps:
 
 ## TODO
 
-- Read changed files in a commit from GitHub instead of reading directly from the local filesystem.
 - Change the script to read the content of files affected by a commit instead of a hardcoded `index.js` file.
