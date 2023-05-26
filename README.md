@@ -1,6 +1,6 @@
 # openai-check-the-docs
 
-This Github action compares the contents of pushed code with the contents of the README.md and creates a pull request with suggested documentation changes. It uses the OpenAI API to generate suggestions for documentation updates.
+This Github action compares the contents of pushed code with the contents of the README.md and creates a pull request with suggested documentation changes. It uses the OpenAI API GPT-4 model to generate suggestions for documentation updates. Check code for prompts.
 
 ## Local Setup 
 0. Create an OpenAI API key at https://platform.openai.com/ if you do not already have one
